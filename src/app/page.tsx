@@ -13,7 +13,7 @@ export default function Home() {
           priority
         />
         <h1 className="text-5xl text-green-500">
-          AI Chat Bot with Next.js
+          AI Chat Bot with Next.js {process.env.APP_VERSION}
         </h1>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
