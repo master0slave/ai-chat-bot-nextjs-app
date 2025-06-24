@@ -14,7 +14,7 @@ export default async function ChatPage() {
   return (
     <div className="flex h-svh w-full items-center justify-center gap-2">
       <p>
-        Hello <span>{data.user.email} ID: (data.user.id)</span>
+        สวัสดี <span>{data.user.email} ID: {data.user.id}</span>
       </p>
       <LogoutButton />
     </div>
