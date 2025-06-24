@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
-
-import { LogoutButton } from '@/components/logout-button'
 import { createClient } from '@/lib/supabase/server'
+import { ChatWindow } from '@/components/chat-window'
 
 export default async function ChatPage() {
   const supabase = await createClient()
@@ -12,11 +11,6 @@ export default async function ChatPage() {
   }
 
   return (
-    <div className="flex h-svh w-full items-center justify-center gap-2">
-      <p>
-        สวัสดี <span>{data.user.email} ID: {data.user.id}</span>
-      </p>
-      <LogoutButton />
-    </div>
+    <ChatWindow />
   )
 }

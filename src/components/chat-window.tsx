@@ -31,6 +31,7 @@ import {
   Trash,
 } from "lucide-react"
 import { useState } from "react"
+import { LogoutButton } from "./logout-button"
 
 const messages = [
   {
@@ -67,7 +68,7 @@ const messages = [
   },
 ]
 
-function ConversationPromptInput() {
+function ChatWindow() {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [chatMessages, setChatMessages] = useState(messages)
@@ -102,11 +103,18 @@ function ConversationPromptInput() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
+      <div className="text-center p-3 bg-gray-500 text-white">
+        <p>
+          สวัสดี <span> test01@test.com ID: 12345 </span>
+        </p>
+        <LogoutButton />
+      </div>
+
       <ChatContainerRoot className="relative flex-1 space-y-0 overflow-y-auto px-4 py-12">
         <ChatContainerContent className="space-y-12 px-4 py-12">
           {chatMessages.map((message, index) => {
-            const isAssistant = message.role === "assistant"
-            const isLastMessage = index === chatMessages.length - 1
+            const isAssistant = message.role === "assistant";
+            const isLastMessage = index === chatMessages.length - 1;
 
             return (
               <Message
@@ -200,7 +208,7 @@ function ConversationPromptInput() {
                   </div>
                 )}
               </Message>
-            )
+            );
           })}
         </ChatContainerContent>
       </ChatContainerRoot>
@@ -276,7 +284,7 @@ function ConversationPromptInput() {
         </PromptInput>
       </div>
     </div>
-  )
+  );
 }
 
-export { ConversationPromptInput }
+export { ChatWindow }
