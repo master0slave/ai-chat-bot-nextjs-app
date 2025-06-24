@@ -11,6 +11,10 @@ export default async function ChatPage() {
   }
 
   return (
-    <ChatWindow />
+    <>
+    {
+      data?.user?.email && <ChatWindow email={data.user.email} id={data.user.id} />
+    }
+    </>
   )
 }

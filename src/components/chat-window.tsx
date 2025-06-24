@@ -68,7 +68,7 @@ const messages = [
   },
 ]
 
-function ChatWindow() {
+function ChatWindow({email, id}: {email: string, id: string}) {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [chatMessages, setChatMessages] = useState(messages)
@@ -105,7 +105,7 @@ function ChatWindow() {
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="text-center p-3 bg-gray-500 text-white">
         <p>
-          สวัสดี <span> test01@test.com ID: 12345 </span>
+          สวัสดี <span> {email} ID: {id} </span>
         </p>
         <LogoutButton />
       </div>
