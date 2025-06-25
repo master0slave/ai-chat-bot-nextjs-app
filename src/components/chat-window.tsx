@@ -104,6 +104,7 @@ function ChatWindow({email, id}: {email: string, id: string}) {
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="text-center p-3 bg-gray-500 text-white">
+        <h1 className="text-lg font-bold mb-2">ระบบ AI Chat Bot </h1>
         <p>
           สวัสดี <span> {email} ID: {id} </span>
         </p>
