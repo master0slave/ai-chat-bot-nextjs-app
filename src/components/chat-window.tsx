@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import {
@@ -30,76 +31,24 @@ import {
   ThumbsUp,
   Trash,
 } from "lucide-react"
-import { useState } from "react"
+import { useChat } from "@ai-sdk/react"
 import { LogoutButton } from "./logout-button"
 
-const messages = [
-  {
-    id: 1,
-    role: "user",
-    content: "Hello! Can you help me with a coding question?",
-  },
-  {
-    id: 2,
-    role: "assistant",
-    content:
-      "Of course! I'd be happy to help with your coding question. What would you like to know?",
-  },
-  {
-    id: 3,
-    role: "user",
-    content: "How do I create a responsive layout with CSS Grid?",
-  },
-  {
-    id: 4,
-    role: "assistant",
-    content:
-      "Creating a responsive layout with CSS Grid is straightforward. Here's a basic example:\n\n```css\n.container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 1rem;\n}\n```\n\nThis creates a grid where:\n- Columns automatically fit as many as possible\n- Each column is at least 250px wide\n- Columns expand to fill available space\n- There's a 1rem gap between items\n\nWould you like me to explain more about how this works?",
-  },
-  {
-    id: 5,
-    role: "user",
-    content: "What is the capital of France?",
-  },
-  {
-    id: 6,
-    role: "assistant",
-    content: "The capital of France is Paris.",
-  },
-]
 
 function ChatWindow({email, id}: {email: string, id: string}) {
-  const [prompt, setPrompt] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [chatMessages, setChatMessages] = useState(messages)
+  const { 
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    status,
+    error,
+    stop
+  } = useChat({ api: "api/chat4" , streamProtocol: "text"})
 
-  const handleSubmit = () => {
-    if (!prompt.trim()) return
+  const isLoading = status === "submitted" || status === "streaming";
 
-    setPrompt("")
-    setIsLoading(true)
 
-    // Add user message immediately
-    const newUserMessage = {
-      id: chatMessages.length + 1,
-      role: "user",
-      content: prompt.trim(),
-    }
-
-    setChatMessages([...chatMessages, newUserMessage])
-
-    // Simulate API response
-    setTimeout(() => {
-      const assistantResponse = {
-        id: chatMessages.length + 2,
-        role: "assistant",
-        content: `This is a response to: "${prompt.trim()}"`,
-      }
-
-      setChatMessages((prev) => [...prev, assistantResponse])
-      setIsLoading(false)
-    }, 1500)
-  }
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
@@ -113,9 +62,17 @@ function ChatWindow({email, id}: {email: string, id: string}) {
 
       <ChatContainerRoot className="relative flex-1 space-y-0 overflow-y-auto px-4 py-12">
         <ChatContainerContent className="space-y-12 px-4 py-12">
-          {chatMessages.map((message, index) => {
+          {/* Render messages */}
+          {
+            messages.length === 0 && (
+              <div className="text-center text-gray-400 my-8">
+                เริ่มคุยกับ AI ได้เลย...
+              </div>
+            )
+          }
+          {messages.map((message, index) => {
             const isAssistant = message.role === "assistant";
-            const isLastMessage = index === chatMessages.length - 1;
+            const isLastMessage = index === messages.length - 1;
 
             return (
               <Message
@@ -208,6 +165,9 @@ function ChatWindow({email, id}: {email: string, id: string}) {
                     </MessageActions>
                   </div>
                 )}
+
+                {error && <p className="text-red-500 text-center">{error.message}</p>}
+
               </Message>
             );
           })}
@@ -216,8 +176,8 @@ function ChatWindow({email, id}: {email: string, id: string}) {
       <div className="inset-x-0 bottom-0 mx-auto w-full max-w-3xl shrink-0 px-3 pb-3 md:px-5 md:pb-5">
         <PromptInput
           isLoading={isLoading}
-          value={prompt}
-          onValueChange={setPrompt}
+          value={input}
+          onValueChange={(value) => handleInputChange({ target: { value } }as any)}
           onSubmit={handleSubmit}
           className="border-input bg-popover relative z-10 w-full rounded-3xl border p-0 pt-1 shadow-xs"
         >
@@ -269,7 +229,7 @@ function ChatWindow({email, id}: {email: string, id: string}) {
 
                 <Button
                   size="icon"
-                  disabled={!prompt.trim() || isLoading}
+                  disabled={!input.trim() || isLoading}
                   onClick={handleSubmit}
                   className="size-9 rounded-full"
                 >
@@ -279,6 +239,11 @@ function ChatWindow({email, id}: {email: string, id: string}) {
                     <span className="size-3 rounded-xs bg-white" />
                   )}
                 </Button>
+                {
+                  isLoading && (
+                    <Button variant="outline" size="sm" type="button" onClick={stop}>Stop</Button>
+                  )
+                }
               </div>
             </PromptInputActions>
           </div>
