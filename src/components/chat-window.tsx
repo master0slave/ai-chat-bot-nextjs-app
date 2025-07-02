@@ -44,7 +44,7 @@ function ChatWindow({email, id}: {email: string, id: string}) {
     status,
     error,
     stop
-  } = useChat({ api: "api/chat4" , streamProtocol: "text"})
+  } = useChat({ api: "api/chat5" , streamProtocol: "text"})
 
   const isLoading = status === "submitted" || status === "streaming";
 
