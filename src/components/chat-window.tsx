@@ -1,24 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
 import {
   ChatContainerContent,
   ChatContainerRoot,
-} from "@/components/ui/chat-container"
+} from "@/components/ui/chat-container";
 import {
   Message,
   MessageAction,
   MessageActions,
   MessageContent,
-} from "@/components/ui/message"
+} from "@/components/ui/message";
 import {
   PromptInput,
   PromptInputAction,
   PromptInputActions,
   PromptInputTextarea,
-} from "@/components/ui/prompt-input"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/prompt-input";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   ArrowUp,
   Copy,
@@ -30,46 +30,44 @@ import {
   ThumbsDown,
   ThumbsUp,
   Trash,
-} from "lucide-react"
-import { useChat } from "@ai-sdk/react"
-import { LogoutButton } from "./logout-button"
+} from "lucide-react";
+import { useChat } from "@ai-sdk/react";
+import { LogoutButton } from "./logout-button";
+import React from "react";
 
-
-function ChatWindow({email, id}: {email: string, id: string}) {
-  const { 
+function ChatWindow({ email, id }: { email: string; id: string }) {
+  const {
     messages,
     input,
     handleInputChange,
     handleSubmit,
     status,
     error,
-    stop
-  } = useChat({ api: "api/chat5" , streamProtocol: "text"})
+    stop,
+  } = useChat({ api: "api/chat7", streamProtocol: "text" });
 
   const isLoading = status === "submitted" || status === "streaming";
 
-
-
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <div className="text-center p-3 bg-gray-500 text-white">
-        <h1 className="text-lg font-bold mb-2">ระบบ AI Chat Bot </h1>
+      <div className="text-center p-3 bg-gray-600 text-white">
+        <h1 className="text-3xl mb-2">ระบบ AI Chat Bot สำหรับงาน HR</h1>
         <p>
-          สวัสดี <span> {email} ID: {id} </span>
+          สวัสดี{" "}
+          <span>
+            {email} ID: {id}
+          </span>
         </p>
         <LogoutButton />
       </div>
 
       <ChatContainerRoot className="relative flex-1 space-y-0 overflow-y-auto px-4 py-12">
         <ChatContainerContent className="space-y-12 px-4 py-12">
-          {/* Render messages */}
-          {
-            messages.length === 0 && (
-              <div className="text-center text-gray-400 my-8">
-                เริ่มคุยกับ AI ได้เลย...
-              </div>
-            )
-          }
+          {messages.length === 0 && (
+            <div className="text-center text-gray-400 my-8">
+              เริ่มต้นคุยกับ AI ได้เลย...
+            </div>
+          )}
           {messages.map((message, index) => {
             const isAssistant = message.role === "assistant";
             const isLastMessage = index === messages.length - 1;
@@ -85,10 +83,10 @@ function ChatWindow({email, id}: {email: string, id: string}) {
                 {isAssistant ? (
                   <div className="group flex w-full flex-col gap-0">
                     <MessageContent
-                      className="text-foreground prose w-full flex-1 rounded-lg bg-transparent p-0"
+                      className="whitespace-pre-wrap text-foreground prose w-full flex-1 rounded-lg bg-transparent p-0"
                       markdown
                     >
-                      {message.content}
+                      {JSON.parse(message.content)}
                     </MessageContent>
                     <MessageActions
                       className={cn(
@@ -166,18 +164,29 @@ function ChatWindow({email, id}: {email: string, id: string}) {
                   </div>
                 )}
 
-                {error && <p className="text-red-500 text-center">{error.message}</p>}
-
+                {error && (
+                  <p className="text-red-500 text-center">{error.message}</p>
+                )}
               </Message>
             );
           })}
+
+          {status === "submitted" && (
+            <Message className="mx-auto flex max-w-3xl w-full flex-col gap-2 px-0 items-start">
+              <MessageContent className="text-muted-foreground w-full flex-1 rounded-lg bg-transparent p-0 select-none">
+                {"กำลังพิมพ์..."}
+              </MessageContent>
+            </Message>
+          )}
         </ChatContainerContent>
       </ChatContainerRoot>
       <div className="inset-x-0 bottom-0 mx-auto w-full max-w-3xl shrink-0 px-3 pb-3 md:px-5 md:pb-5">
         <PromptInput
           isLoading={isLoading}
           value={input}
-          onValueChange={(value) => handleInputChange({ target: { value } }as any)}
+          onValueChange={(value) =>
+            handleInputChange({ target: { value } } as any)
+          }
           onSubmit={handleSubmit}
           className="border-input bg-popover relative z-10 w-full rounded-3xl border p-0 pt-1 shadow-xs"
         >
@@ -239,11 +248,16 @@ function ChatWindow({email, id}: {email: string, id: string}) {
                     <span className="size-3 rounded-xs bg-white" />
                   )}
                 </Button>
-                {
-                  isLoading && (
-                    <Button variant="outline" size="sm" type="button" onClick={stop}>Stop</Button>
-                  )
-                }
+                {isLoading && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={stop}
+                  >
+                    Stop
+                  </Button>
+                )}
               </div>
             </PromptInputActions>
           </div>
@@ -253,4 +267,4 @@ function ChatWindow({email, id}: {email: string, id: string}) {
   );
 }
 
-export { ChatWindow }
+export { ChatWindow };
